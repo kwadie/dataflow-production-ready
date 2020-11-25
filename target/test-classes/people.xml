@@ -1,0 +1,12 @@
+<people>
+    <person id="1">
+        <name>Luke Skywalker</name>
+        <addresses>
+            <address type="home" address="Tatooine" />
+            <address type="work" address="Lars Farm" />
+        </addresses>
+    </person>
+    <person id="2">
+        <name>Leia Organa</name>
+    </person>
+</people>
