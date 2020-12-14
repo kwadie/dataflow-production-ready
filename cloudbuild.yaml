@@ -1,0 +1,55 @@
+steps:
+- id: "Mvn test"
+  name: maven:3-jdk-8
+  entrypoint: mvn
+  args: ['test']
+
+#- id: "Mvn version"
+#  name: maven:3-jdk-8
+#  entrypoint: mvn
+#  args: ['version','${COMMIT_SHA}']
+
+- id: "Mvn compile"
+  name: maven:3-jdk-8
+  entrypoint: mvn
+  args: ['clean','package','-Dmaven.test.skip=true','-Djar.finalName=${_APP_NAME}-${COMMIT_SHA}']
+
+#- id: "Python: Build Docker Image"
+#  name: gcr.io/cloud-builders/docker
+#  args: ['build', '--tag', 'gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${COMMIT_SHA}', '.']
+
+#- id: "Python: Push the container image"
+#  name: "gcr.io/cloud-builders/docker"
+#  args: ["push", "gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${COMMIT_SHA}"]
+
+#- id: "Python: Generate Dataflow template"
+#  name: gcr.io/cloud-builders/gcloud
+#  args: ['dataflow',
+#         'flex-template',
+#         'build',
+#         'gs://${_BUCKET_NAME}/dataflow_templates/${_IMAGE_NAME}.json',
+#         '--image=gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${COMMIT_SHA}',
+#         '--sdk-language=PYTHON',
+#         '--metadata-file=metadata.json'
+#  ]
+
+- id: "Generate Dataflow template"
+  name: gcr.io/cloud-builders/gcloud
+  args: ['dataflow',
+         'flex-template',
+         'build',
+         'gs://${_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
+         '--image-gcr-path=gcr.io/${PROJECT_ID}/${_APP_NAME}:${COMMIT_SHA}',
+         '--sdk-language=JAVA',
+         '--flex-template-base-image JAVA11',
+         '--metadata-file=metadata.json',
+         '--jar=target/${_APP_NAME}-${COMMIT_SHA}.jar',
+         '--env=FLEX_TEMPLATE_JAVA_MAIN_CLASS=${_JAVA_MAIN_CLASS}'
+  ]
+
+#add run
+
+substitutions:
+  _BUCKET_NAME: dataflow-template-bucket
+  _APP_NAME: XmlPipelineWithDeadLetter
+  _JAVA_MAIN_CLASS: pipeline.XmlPipelineWithDeadLetter
