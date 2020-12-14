@@ -2,7 +2,7 @@ steps:
 - id: "Mvn test"
   name: maven:3-jdk-8
   entrypoint: mvn
-  args: ['test']
+  args: ['test','-q']
 
 #- id: "Mvn version"
 #  name: maven:3-jdk-8
@@ -12,7 +12,7 @@ steps:
 - id: "Mvn compile"
   name: maven:3-jdk-8
   entrypoint: mvn
-  args: ['clean','package','-Dmaven.test.skip=true','-Djar.finalName=${_APP_NAME}-${COMMIT_SHA}']
+  args: ['clean','package','-Dmaven.test.skip=true','-Djar.finalName=${_APP_NAME}-${COMMIT_SHA}','-q']
 
 #- id: "Python: Build Docker Image"
 #  name: gcr.io/cloud-builders/docker
@@ -47,7 +47,19 @@ steps:
          '--env=FLEX_TEMPLATE_JAVA_MAIN_CLASS=${_JAVA_MAIN_CLASS}'
   ]
 
-#add run
+
+- id: "Run Dataflow pipeline"
+  name: gcr.io/cloud-builders/gcloud
+  export REGION="us-central1"
+  args: [ 'dataflow', 
+          'flex-template',
+          'run',
+          '${_APP_NAME}-${COMMIT_SHA}',
+          '--template-file-gcs-location=gs://${_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
+          '--parameters inputSubscription="$SUBSCRIPTION"',
+          '--parameters outputTable="$PROJECT:$DATASET.$TABLE"',
+          '--region "$REGION"'
+        ]
 
 substitutions:
   _BUCKET_NAME: dataflow-template-bucket
