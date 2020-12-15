@@ -1,0 +1,33 @@
+{
+  "name": "Batch Beam SQL",
+  "description": "An Apache Beam streaming pipeline that reads XML encoded messages, uses Beam SQL to transform the message data, and writes the results to a BigQuery",
+  "parameters": [
+    {
+      "name": "sourcePath",
+      "label": "XML source data path",
+      "helpText": "XML source data path.",
+      "isOptional": false,
+      "regexes": [
+        "[a-zA-Z][-_.~+%a-zA-Z0-9]{2,}"
+      ]
+    },
+    {
+      "name": "outputTableSpec",
+      "label": "BigQuery output table",
+      "helpText": "BigQuery table spec to write the output to in the format 'project:dataset.table'.",
+      "isOptional": true,
+      "regexes": [
+        "[^:]+:[^.]+[.].+"
+      ]
+    },
+    {
+      "name": "deadLetterTableSpec",
+      "label": "BigQuery output table",
+      "helpText": "BigQuery table spec to write the dead letter output to in the format 'project:dataset.table'.",
+      "isOptional": true,
+      "regexes": [
+        "[^:]+:[^.]+[.].+"
+      ]
+    }
+  ]
+}
