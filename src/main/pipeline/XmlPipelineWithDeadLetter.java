@@ -49,18 +49,18 @@ public class XmlPipelineWithDeadLetter {
 
 
     public interface Options extends DataflowPipelineOptions {
-        @Description("source data path")
+        @Description("XML source data path")
         @Validation.Required
         String getSourcePath();
 
         void setSourcePath(String sourcePath);
 
-        @Description("Table spec to write the output to in the format project:dataset.table ")
+        @Description("Table spec to write the output to in the format project:dataset.table")
         String getOutputTableSpec();
 
         void setOutputTableSpec(String value);
 
-        @Description("Table spec to write the dead letter output to in the format project:dataset.table ")
+        @Description("Table spec to write the dead letter output to in the format project:dataset.table")
         String getDeadLetterTableSpec();
 
         void setDeadLetterTableSpec(String value);

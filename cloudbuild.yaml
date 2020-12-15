@@ -27,7 +27,7 @@ steps:
 #  args: ['dataflow',
 #         'flex-template',
 #         'build',
-#         'gs://${_BUCKET_NAME}/dataflow_templates/${_IMAGE_NAME}.json',
+#         'gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_IMAGE_NAME}.json',
 #         '--image=gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${COMMIT_SHA}',
 #         '--sdk-language=PYTHON',
 #         '--metadata-file=metadata.json'
@@ -38,30 +38,36 @@ steps:
   args: ['dataflow',
          'flex-template',
          'build',
-         'gs://${_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
+         'gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
          '--image-gcr-path=gcr.io/${PROJECT_ID}/${_APP_NAME}:${COMMIT_SHA}',
          '--sdk-language=JAVA',
          '--flex-template-base-image JAVA11',
          '--metadata-file=metadata.json',
          '--jar=target/${_APP_NAME}-${COMMIT_SHA}.jar',
-         '--env=FLEX_TEMPLATE_JAVA_MAIN_CLASS=${_JAVA_MAIN_CLASS}'
+         '--env=FLEX_TEMPLATE_JAVA_MAIN_CLASS=${_DATAFLOW_JAVA_MAIN_CLASS}'
   ]
 
 
-- id: "Run Dataflow pipeline"
+- id: "Test Dataflow pipeline"
   name: gcr.io/cloud-builders/gcloud
-  export REGION="us-central1"
   args: [ 'dataflow', 
           'flex-template',
           'run',
           '${_APP_NAME}-${COMMIT_SHA}',
-          '--template-file-gcs-location=gs://${_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
-          '--parameters inputSubscription="$SUBSCRIPTION"',
-          '--parameters outputTable="$PROJECT:$DATASET.$TABLE"',
-          '--region "$REGION"'
+          '--template-file-gcs-location=gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
+          '--parameters=sourcePath=${_OUTPUT_PATH}',
+          '--parameters=outputTableSpec=${_OUTPUT_TABLE}',
+          '--parameters=deadLetterTableSpec=${_DEAD_LETTER_TABLE}',
+          '--region=${_APP_REGION}'
         ]
 
+#todo: wrap pipeline smoke test in bash script with result verification
+
 substitutions:
-  _BUCKET_NAME: dataflow-template-bucket
+  _FLEX_TEMPLATE_BUCKET_NAME: dataflow-template-bucket
   _APP_NAME: XmlPipelineWithDeadLetter
-  _JAVA_MAIN_CLASS: pipeline.XmlPipelineWithDeadLetter
+  _APP_REGION: us-central1
+  _DATAFLOW_JAVA_MAIN_CLASS: pipeline.XmlPipelineWithDeadLetter
+  _OUTPUT_PATH: output_path
+  _OUTPUT_TABLE: projectId:dataset.outputTable
+  _DEAD_LETTER_TABLE: projectId:dataset.deadLetterTable
