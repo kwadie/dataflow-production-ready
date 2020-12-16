@@ -4,10 +4,10 @@ steps:
   entrypoint: mvn
   args: ['test','-q']
 
-#- id: "Mvn version"
-#  name: maven:3-jdk-8
-#  entrypoint: mvn
-#  args: ['version','${_APP_VERSION}']
+- id: "Mvn version"
+  name: maven:3-jdk-8
+  entrypoint: mvn
+  args: ['versions:set','-DnewVersion=${_APP_VERSION}','-q']
 
 - id: "Mvn compile"
   name: maven:3-jdk-8
@@ -48,27 +48,28 @@ steps:
   ]
 
 
-#- id: "Test Dataflow pipeline"
-#  name: gcr.io/cloud-builders/gcloud
-#  args: [ 'dataflow', 
-#          'flex-template',
-#          'run',
-#          '${_APP_NAME}-${_APP_VERSION}',
-#          '--template-file-gcs-location=gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
-#          '--parameters=sourcePath=${_OUTPUT_PATH}',
-#          '--parameters=outputTableSpec=${_OUTPUT_TABLE}',
-#          '--parameters=deadLetterTableSpec=${_DEAD_LETTER_TABLE}',
-#          '--region=${_APP_REGION}'
-#        ]
+- id: "Test Dataflow pipeline"
+  name: gcr.io/cloud-builders/gcloud
+  args: [ 'dataflow', 
+          'flex-template',
+          'run',
+          '${_APP_NAME}-${_APP_VERSION}',
+          '--template-file-gcs-location=gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
+          '--parameters=sourcePath=${_SOURCE_PATH}',
+          '--parameters=outputTableSpec=${_OUTPUT_TABLE}',
+          '--parameters=deadLetterTableSpec=${_DEAD_LETTER_TABLE}',
+          '--region=${_APP_REGION}'
+        ]
 
 #todo: wrap pipeline smoke test in bash script with result verification
 
 substitutions:
   _FLEX_TEMPLATE_BUCKET_NAME: dataflow-template-bucket-asdf
   _APP_NAME: dataflow-pipeline
+  #currently the versioning is based on commit_sha. could be later changed to git-tag or something more meaningful
   _APP_VERSION: ${SHORT_SHA}
   _APP_REGION: us-central1
   _DATAFLOW_JAVA_MAIN_CLASS: pipeline.XmlPipelineWithDeadLetter
-  _OUTPUT_PATH: output_path
-  _OUTPUT_TABLE: projectId:dataset.outputTable
-  _DEAD_LETTER_TABLE: projectId:dataset.deadLetterTable
+  _SOURCE_PATH: source_path
+  _OUTPUT_TABLE: ${PROJECT_ID}:dataset.outputTable
+  _DEAD_LETTER_TABLE: ${PROJECT_ID}:dataset.deadLetterTable
