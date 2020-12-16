@@ -7,7 +7,7 @@ steps:
 #- id: "Mvn version"
 #  name: maven:3-jdk-8
 #  entrypoint: mvn
-#  args: ['version','${COMMIT_SHA}']
+#  args: ['version','${_APP_VERSION}']
 
 - id: "Mvn compile"
   name: maven:3-jdk-8
@@ -16,11 +16,11 @@ steps:
 
 #- id: "Python: Build Docker Image"
 #  name: gcr.io/cloud-builders/docker
-#  args: ['build', '--tag', 'gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${COMMIT_SHA}', '.']
+#  args: ['build', '--tag', 'gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${_APP_VERSION}', '.']
 
 #- id: "Python: Push the container image"
 #  name: "gcr.io/cloud-builders/docker"
-#  args: ["push", "gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${COMMIT_SHA}"]
+#  args: ["push", "gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${_APP_VERSION}"]
 
 #- id: "Python: Generate Dataflow template"
 #  name: gcr.io/cloud-builders/gcloud
@@ -28,7 +28,7 @@ steps:
 #         'flex-template',
 #         'build',
 #         'gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_IMAGE_NAME}.json',
-#         '--image=gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${COMMIT_SHA}',
+#         '--image=gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:${_APP_VERSION}',
 #         '--sdk-language=PYTHON',
 #         '--metadata-file=metadata.json'
 #  ]
@@ -39,11 +39,11 @@ steps:
          'flex-template',
          'build',
          'gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
-         '--image-gcr-path=gcr.io/${PROJECT_ID}/dataflowtemplate:${COMMIT_SHA}',
+         '--image-gcr-path=gcr.io/${PROJECT_ID}/${_APP_NAME}:${_APP_VERSION}',
          '--sdk-language=JAVA',
          '--flex-template-base-image=JAVA11',
          '--metadata-file=metadata.json',
-         '--jar=target/${_APP_NAME}-${COMMIT_SHA}.jar',
+         '--jar=target/${_APP_NAME}-${_APP_NAME}.jar',
          '--env=FLEX_TEMPLATE_JAVA_MAIN_CLASS=${_DATAFLOW_JAVA_MAIN_CLASS}'
   ]
 
@@ -53,7 +53,7 @@ steps:
 #  args: [ 'dataflow', 
 #          'flex-template',
 #          'run',
-#          '${_APP_NAME}-${COMMIT_SHA}',
+#          '${_APP_NAME}-${_APP_VERSION}',
 #          '--template-file-gcs-location=gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
 #          '--parameters=sourcePath=${_OUTPUT_PATH}',
 #          '--parameters=outputTableSpec=${_OUTPUT_TABLE}',
