@@ -39,7 +39,7 @@ steps:
          'flex-template',
          'build',
          'gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
-         '--image-gcr-path=gcr.io/${PROJECT_ID}/${_APP_NAME}:${_APP_VERSION}',
+         '--image-gcr-path=gcr.io/${PROJECT_ID}/${_APP_NAME}:latest',
          '--sdk-language=JAVA',
          '--flex-template-base-image=JAVA11',
          '--metadata-file=metadata.json',
