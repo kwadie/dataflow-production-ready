@@ -2,7 +2,7 @@ steps:
 - id: "Mvn test"
   name: maven:3-jdk-8
   entrypoint: mvn
-  args: ['test','-q']
+  args: ['test']
 
 #- id: "Mvn version"
 #  name: maven:3-jdk-8
@@ -12,7 +12,7 @@ steps:
 - id: "Mvn compile"
   name: maven:3-jdk-8
   entrypoint: mvn
-  args: ['clean','package','-Dmaven.test.skip=true','-Djar.finalName=${_APP_NAME}-${COMMIT_SHA}','-q']
+  args: ['clean','package','-Dmaven.test.skip=true','-Djar.finalName=${_APP_NAME}-${COMMIT_SHA}']
 
 #- id: "Python: Build Docker Image"
 #  name: gcr.io/cloud-builders/docker
@@ -41,7 +41,7 @@ steps:
          'gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
          '--image-gcr-path=gcr.io/${PROJECT_ID}/${_APP_NAME}:${COMMIT_SHA}',
          '--sdk-language=JAVA',
-         '--flex-template-base-image JAVA11',
+         '--flex-template-base-image=JAVA11',
          '--metadata-file=metadata.json',
          '--jar=target/${_APP_NAME}-${COMMIT_SHA}.jar',
          '--env=FLEX_TEMPLATE_JAVA_MAIN_CLASS=${_DATAFLOW_JAVA_MAIN_CLASS}'
