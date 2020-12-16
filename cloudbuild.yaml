@@ -48,23 +48,23 @@ steps:
   ]
 
 
-- id: "Test Dataflow pipeline"
-  name: gcr.io/cloud-builders/gcloud
-  args: [ 'dataflow', 
-          'flex-template',
-          'run',
-          '${_APP_NAME}-${COMMIT_SHA}',
-          '--template-file-gcs-location=gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
-          '--parameters=sourcePath=${_OUTPUT_PATH}',
-          '--parameters=outputTableSpec=${_OUTPUT_TABLE}',
-          '--parameters=deadLetterTableSpec=${_DEAD_LETTER_TABLE}',
-          '--region=${_APP_REGION}'
-        ]
+#- id: "Test Dataflow pipeline"
+#  name: gcr.io/cloud-builders/gcloud
+#  args: [ 'dataflow', 
+#          'flex-template',
+#          'run',
+#          '${_APP_NAME}-${COMMIT_SHA}',
+#          '--template-file-gcs-location=gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
+#          '--parameters=sourcePath=${_OUTPUT_PATH}',
+#          '--parameters=outputTableSpec=${_OUTPUT_TABLE}',
+#          '--parameters=deadLetterTableSpec=${_DEAD_LETTER_TABLE}',
+#          '--region=${_APP_REGION}'
+#        ]
 
 #todo: wrap pipeline smoke test in bash script with result verification
 
 substitutions:
-  _FLEX_TEMPLATE_BUCKET_NAME: dataflow-template-bucket
+  _FLEX_TEMPLATE_BUCKET_NAME: dataflow-template-bucket-asdf
   _APP_NAME: XmlPipelineWithDeadLetter
   _APP_REGION: us-central1
   _DATAFLOW_JAVA_MAIN_CLASS: pipeline.XmlPipelineWithDeadLetter
