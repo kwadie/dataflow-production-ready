@@ -39,7 +39,7 @@ steps:
          'flex-template',
          'build',
          'gs://${_FLEX_TEMPLATE_BUCKET_NAME}/dataflow_templates/${_APP_NAME}.json',
-         '--image-gcr-path=gcr.io/${PROJECT_ID}/test:${_APP_VERSION}',
+         '--image-gcr-path=gcr.io/${PROJECT_ID}/${_APP_NAME}:${_APP_VERSION}',
          '--sdk-language=JAVA',
          '--flex-template-base-image=JAVA11',
          '--metadata-file=metadata.json',
@@ -65,7 +65,7 @@ steps:
 
 substitutions:
   _FLEX_TEMPLATE_BUCKET_NAME: dataflow-template-bucket-asdf
-  _APP_NAME: XmlPipelineWithDeadLetter
+  _APP_NAME: dataflow-pipeline
   _APP_VERSION: ${SHORT_SHA}
   _APP_REGION: us-central1
   _DATAFLOW_JAVA_MAIN_CLASS: pipeline.XmlPipelineWithDeadLetter
