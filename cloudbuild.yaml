@@ -43,7 +43,7 @@ steps:
          '--sdk-language=JAVA',
          '--flex-template-base-image=JAVA11',
          '--metadata-file=metadata.json',
-         '--jar=target/${_APP_NAME}-${_APP_NAME}.jar',
+         '--jar=target/${_APP_NAME}-${_APP_VERSION}.jar',
          '--env=FLEX_TEMPLATE_JAVA_MAIN_CLASS=${_DATAFLOW_JAVA_MAIN_CLASS}'
   ]
 
