@@ -2,7 +2,7 @@ steps:
 - id: "Mvn test"
   name: maven:3-jdk-8
   entrypoint: mvn
-  args: ['test']
+  args: ['test','-q']
 
 #- id: "Mvn version"
 #  name: maven:3-jdk-8
@@ -12,7 +12,7 @@ steps:
 - id: "Mvn compile"
   name: maven:3-jdk-8
   entrypoint: mvn
-  args: ['clean','package','-Dmaven.test.skip=true','-Djar.finalName=${_APP_NAME}-${COMMIT_SHA}']
+  args: ['clean','package','-Dmaven.test.skip=true','-Djar.finalName=${_APP_NAME}-${_APP_VERSION}','-q']
 
 #- id: "Python: Build Docker Image"
 #  name: gcr.io/cloud-builders/docker
@@ -66,6 +66,7 @@ steps:
 substitutions:
   _FLEX_TEMPLATE_BUCKET_NAME: dataflow-template-bucket-asdf
   _APP_NAME: XmlPipelineWithDeadLetter
+  _APP_VERSION: ${SHORT_SHA}
   _APP_REGION: us-central1
   _DATAFLOW_JAVA_MAIN_CLASS: pipeline.XmlPipelineWithDeadLetter
   _OUTPUT_PATH: output_path
