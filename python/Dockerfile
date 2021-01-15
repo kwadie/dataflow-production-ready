@@ -26,6 +26,9 @@ COPY resources /dataflow/template/resources
 COPY tests /dataflow/template/tests
 COPY requirements.txt /dataflow/template/requirements.txt
 
+COPY data /dataflow/template/data
+COPY terraform /dataflow/template/terraform
+
 RUN pip install -U -r /dataflow/template/requirements.txt
 
 # Entry point for the Dataflow job.

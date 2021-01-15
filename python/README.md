@@ -2,7 +2,7 @@
 
 ### Creating Python Virtual Environment for development
 
-In the repo root directory, run the following:
+In the module root directory, run the following:
 
 ```
 python3 -m venv /tmp/venv/dataflow-production-ready-env
@@ -33,26 +33,27 @@ Then, configure the gcloud tool
 gcloud config set project $GCP_PROJECT
 ```
 
-Then update [run_system_integration_test.sh](run_system_integration_test.sh) with the same values
-to able to run cloud build successfully.
-
 ### Commands
 
 #### Running a manual build
 
 ```
-gcloud builds submit --config=cloudbuild.yaml --substitutions=_TARGET_GCR_IMAGE=$TARGET_GCR_IMAGE,_TEMPLATE_GCS_LOCATION=$TEMPLATE_GCS_LOCATION,_REGION=$REGION,_INPUT_CSV=$INPUT_CSV,_BQ_RESULTS=$BQ_RESULTS,_BQ_ERRORS=$BQ_ERRORS
+gcloud builds submit --config=cloudbuild.yaml --substitutions=_TARGET_GCR_IMAGE=$TARGET_GCR_IMAGE,_TEMPLATE_GCS_LOCATION=$TEMPLATE_GCS_LOCATION,_REGION=$REGION
 ```
 
 #### Running Unit Tests
 
 To run all unit tests
 
-`python -m unittest discover`
+```
+python -m unittest discover
+```
 
 To run particular test file
 
-`python -m unittest ml_preproc.pipeline.ml_preproc_test`
+```
+python -m unittest ml_preproc.pipeline.ml_preproc_test
+```
 
 #### Running pipeline locally 
 
@@ -72,7 +73,7 @@ chmod +x run_dataflow_runner.sh
 
 
 
-#### Running the Flex Templates
+#### Running Flex Templates
 
 Even if the job runs successfully on Dataflow service when submitted locally, the template has to be tested as well since
 it might contain errors in the Docker file that prevents the job from running. 

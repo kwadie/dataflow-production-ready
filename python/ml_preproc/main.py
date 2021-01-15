@@ -4,7 +4,6 @@ from apache_beam.io.gcp import bigquery
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import SetupOptions
 from pipeline.beam_classes.preprocess import PreprocessingTransform
-from pipeline.model import schemas
 from pipeline.beam_classes.extract import ExtractDataTransform
 import logging
 from pipeline.utils.utils import read_abbreviations_local
@@ -33,14 +32,12 @@ def run():
         results | "Write results to BigQuery" >> beam.io.WriteToBigQuery(
             table=app_args.results_bq_table,
             create_disposition=bigquery.BigQueryDisposition.CREATE_NEVER,
-            write_disposition=bigquery.BigQueryDisposition.WRITE_TRUNCATE,
-            schema=schemas.RESULTS_SCHEMA)
+            write_disposition=bigquery.BigQueryDisposition.WRITE_TRUNCATE)
 
         parsing_errors | "Write errors to BigQuery" >> beam.io.WriteToBigQuery(
             table=app_args.errors_bq_table,
             create_disposition=bigquery.BigQueryDisposition.CREATE_NEVER,
-            write_disposition=bigquery.BigQueryDisposition.WRITE_TRUNCATE,
-            schema=schemas.ERRORS_SCHEMA)
+            write_disposition=bigquery.BigQueryDisposition.WRITE_TRUNCATE)
 
 
 if __name__ == '__main__':

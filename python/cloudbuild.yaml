@@ -34,9 +34,6 @@ steps:
       - 'TEMPLATE_GCS_LOCATION=$_TEMPLATE_GCS_LOCATION'
       - 'GCP_PROJECT=$PROJECT_ID'
       - 'REGION=$_REGION'
-      - 'INPUT_CSV=$_INPUT_CSV'
-      - 'BQ_RESULTS=$_BQ_RESULTS'
-      - 'BQ_ERRORS=$_BQ_ERRORS'
       - 'SETUP_FILE=/dataflow/template/ml_preproc/setup.py'
     args:
        - '-c'

@@ -32,9 +32,11 @@ class ParseCSVDoFn(DoFn):
     # We have two outputs: one for well formed input lines, and another one with potential parsing errors
     # (the parsing error output will be written to a different BigQuery table)
     try:
-      record: Record = data_classes.line2record(element)
-      self.correct_records_counter.inc()
-      yield pvalue.TaggedOutput(ParseCSVDoFn.CORRECT_OUTPUT_TAG, record)
+      # ignore header row
+      if element != self._header_line:
+        record: Record = data_classes.line2record(element)
+        self.correct_records_counter.inc()
+        yield pvalue.TaggedOutput(ParseCSVDoFn.CORRECT_OUTPUT_TAG, record)
     except TypeError as err:
       self.wrong_records_counter.inc()
       msg = str(err)
