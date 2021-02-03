@@ -1,3 +1,5 @@
+# dataflow-production-ready (Python)
+
 ## Usage
 
 ### Creating Python Virtual Environment for development
@@ -137,9 +139,6 @@ In this project the following variables are used:
 - $_TARGET_GCR_IMAGE: The GCR image name to be submitted to Cloud Build (not URI) (e.g wordcount-flex-template)
 - $_TEMPLATE_GCS_LOCATION: GCS location to store the template spec file (e.g. gs://bucket/dir/). The spec file path is required later on to submit run commands to Dataflow
 - $_REGION: GCP region to deploy and run the dataflow flex template
-- $_INPUT_CSV: Job Parameter - input file path 
-- $_BQ_RESULTS: Job Parameter - BigQuery results table (project:dataset.table)
-- $_BQ_ERRORS: Job Parameter - BigQuery errors table (project:dataset.table)
 
 These variables must be set during manual build execution or via a build trigger
 
