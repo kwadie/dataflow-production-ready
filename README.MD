@@ -43,3 +43,9 @@ The main goal of the pipeline is to demonstrates the following:
     * Running unit tests
     * Building and deploying Flex template
     * Running system integration test with Flex template 
+    
+ ## Contributors
+ This repo is a collaborative work done by the following contributors: 
+ * [kwadie](https://github.com/kwadie)
+ * [gmogr](https://github.com/gmogr)
+ * [iht](https://github.com/iht)
