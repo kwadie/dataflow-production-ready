@@ -13,7 +13,7 @@ The repo uses many concepts as explained in the Google Cloud blog series
 [Building production-ready data pipelines using Dataflow](https://cloud.google.com/solutions/building-production-ready-data-pipelines-using-dataflow-overview)  
 
 ## Sample pipelines
-The repo provides a data-preprocessing pipeline for a hypothetical ML use case in both [Python](python) and [Java](java).
+The repo provides a data-preprocessing pipeline for a hypothetical ML use case in both [Python](python) and [Java](java)(WIP).
 The pipeline reads and parse a CSV in the following format:
 ```
 source_address;source_city;target_address;target_city
