@@ -8,3 +8,8 @@ variable "dataset_location" {
   description = "Dataset Location"
   default     = "EU"
 }
+
+variable "bq_path_to_schemas" {
+  description = "Local path to bq schemas"
+  default     = "schema"
+}

@@ -4,16 +4,10 @@ resource "google_bigquery_dataset" "bq_demo_dataset" {
   location   = var.dataset_location
 }
 
-# Set up results table
-resource "google_bigquery_table" "bq_demo_dataset_results" {
+resource "google_bigquery_table" "bq_demo_tables" {
+  for_each   = fileset(var.bq_path_to_schemas, "*")
+  project    = var.project
   dataset_id = google_bigquery_dataset.bq_demo_dataset.dataset_id
-  table_id   = "ml_preproc_results"
-  schema     = file("schema/ml_preproc_results.json")
-}
-
-# Set up errors table
-resource "google_bigquery_table" "bq_demo_dataset_errors" {
-  dataset_id = google_bigquery_dataset.bq_demo_dataset.dataset_id
-  table_id   = "ml_preproc_errors"
-  schema     = file("schema/ml_preproc_errors.json")
+  table_id   = split(".", each.key)[1]
+  schema     = file("${var.bq_path_to_schemas}/${each.key}")
 }
