@@ -29,4 +29,4 @@ steps:
     name: hashicorp/terraform
     dir: python/terraform
     entrypoint: terraform
-    args: ["apply","-auto-approve","-no-color","-var=\"project=${PROJECT_ID}\""]
+    args: ["apply","-auto-approve","-no-color","-var=project=${PROJECT_ID}"]
