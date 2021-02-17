@@ -1,4 +1,6 @@
 # BigQuery variables
+variable "project" {
+}
 
 variable "dataset_name" {
   default = "dataflow_production_ready"
@@ -11,5 +13,5 @@ variable "dataset_location" {
 
 variable "bq_path_to_schemas" {
   description = "Local path to bq schemas"
-  default     = "schema"
+  default     = "modules/bigquery/schema"
 }

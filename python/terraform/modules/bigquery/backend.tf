@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "tf-backend"
+    bucket = "dataflow-tf-backend"
     prefix = "state"
   }
 }
