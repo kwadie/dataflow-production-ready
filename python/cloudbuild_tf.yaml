@@ -16,17 +16,17 @@ steps:
   - id: 'tf init'
     name: hashicorp/terraform
     dir: python/terraform
-    entrypoint: sh
-    args: [terraform","init"]
+    entrypoint: terraform
+    args: ["init"]
 
   - id: 'tf plan'
     name: hashicorp/terraform
     dir: python/terraform
-    entrypoint: sh
-    args: [terraform","plan"]
+    entrypoint: terraform
+    args: ["plan"]
 
   - id: 'tf apply'
     name: hashicorp/terraform
     dir: python/terraform
-    entrypoint: sh
-    args: [terraform","apply"," -auto-approve","-no-color","-var=\"project=${PROJECT_ID}\""]
+    entrypoint: terraform
+    args: ["apply","-auto-approve","-no-color","-var=\"project=${PROJECT_ID}\""]
