@@ -10,5 +10,5 @@ resource "google_bigquery_table" "bq_demo_tables" {
   project    = var.project
   dataset_id = google_bigquery_dataset.bq_demo_dataset.dataset_id
   table_id   = split(".", each.key)[0]
-  schema     = file("${var.bq_path_to_schemas}/${each.key}")
+  schema     = file("${path.root}/${var.bq_path_to_schemas}/${each.key}")
 }

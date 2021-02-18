@@ -15,18 +15,11 @@
 
 FROM gcr.io/dataflow-templates-base/python3-template-launcher-base
 
-RUN mkdir -p /dataflow/template
-WORKDIR /dataflow/template
-
-COPY ml_preproc/pipeline /dataflow/template/ml_preproc/pipeline
-COPY ml_preproc/setup.py /dataflow/template/ml_preproc/setup.py
-COPY ml_preproc/main.py /dataflow/template/ml_preproc/main.py
-
-COPY resources /dataflow/template/resources
-COPY tests /dataflow/template/tests
-COPY requirements.txt /dataflow/template/requirements.txt
+COPY . /dataflow/template
 
 RUN pip install -U -r /dataflow/template/requirements.txt
+
+WORKDIR /dataflow/template
 
 # Entry point for the Dataflow job.
 # By setting this variable, no need for setting DATAFLOW_PYTHON_COMMAND_SPEC=python_command_spec.json.
