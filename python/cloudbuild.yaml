@@ -15,15 +15,18 @@
 steps:
   - name: python:3.7
     id: 'run-unit-tests'
+    dir: python
     args: ["./run_unit_tests.sh"]
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'build-dataflow-container'
     entrypoint: 'gcloud'
+    dir: python
     args: [ 'builds', 'submit', '--project=$PROJECT_ID', '--tag', 'gcr.io/$PROJECT_ID/$_TARGET_GCR_IMAGE']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'build-dataflow-template'
+    dir: python
     entrypoint: 'gcloud'
     args: [ 'dataflow', 'flex-template', 'build', '$_TEMPLATE_GCS_LOCATION', '--image', 'gcr.io/$PROJECT_ID/$_TARGET_GCR_IMAGE', '--sdk-language', 'PYTHON', '--metadata-file', 'ml_preproc/spec/metadata.json']
 
