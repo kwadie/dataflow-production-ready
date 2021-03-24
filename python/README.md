@@ -2,6 +2,13 @@
 
 ## Usage
 
+### Creating needed infrastructure components using the terraform script
+
+In the root folder run the following command to deploy needed Bigquery datasets and tables:
+```
+gcloud builds submit .
+```
+
 ### Creating Python Virtual Environment for development
 
 In the module root directory, run the following:
@@ -17,6 +24,7 @@ pip install -r requirements.txt
 In the repo root directory, set the following variables:
 ```
 export TARGET_GCR_IMAGE="DATAFLOW_FLEX_ML_PREPROCESS"
+export TARGET_GCR_IMAGE_TAG="python"
 export TEMPLATE_GCS_LOCATION="gs://bucket/dir/spec.json"
 export GCP_PROJECT="PROJECT_ID"
 export REGION="GCP_REGION"
@@ -38,9 +46,10 @@ gcloud config set project $GCP_PROJECT
 ### Commands
 
 #### Running a manual build
+Run the following command in the root folder
 
 ```
-gcloud builds submit --config=cloudbuild.yaml --substitutions=_TARGET_GCR_IMAGE=$TARGET_GCR_IMAGE,_TEMPLATE_GCS_LOCATION=$TEMPLATE_GCS_LOCATION,_REGION=$REGION
+gcloud builds submit --config=python/cloudbuild.yaml --substitutions=_IMAGE_NAME=${TARGET_GCR_IMAGE},_IMAGE_TAG=${TARGET_GCR_IMAGE_TAG},_BUCKET_NAME=${TEMPLATE_GCS_LOCATION},_REGION=${REGION}
 ```
 
 #### Running Unit Tests

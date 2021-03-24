@@ -37,9 +37,10 @@ echo "Preparing GCP test resources.."
 gcloud config set project "${GCP_PROJECT}"
 gsutil mb -c standard -l "${REGION}" "${GCS_BUCKET}"
 gsutil cp "${LOCAL_INPUT_PATH}" "${GCS_BUCKET}/input/"
+#replace with terraform script and pass the dataset as var
 bq mk --location "${REGION}" "${DATASET}"
-bq mk --table "${RESULTS_TABLE}" terraform/bigquery/schema/ml_preproc_results.json
-bq mk --table "${ERRORS_TABLE}" terraform/bigquery/schema/ml_preproc_errors.json
+bq mk --table "${RESULTS_TABLE}" schemas/ml_preproc_results.json
+bq mk --table "${ERRORS_TABLE}" schemas/ml_preproc_errors.json
 echo "Preparing GCP test resources complete."
 
 echo "Running dataflow flex template with params:
@@ -91,14 +92,14 @@ TEST_FAILED_FLAG='| false |'
 
 #check job results against expected
 if [ "${TEST_RESULT}" = "${TEST_PASSED_FLAG}" ]; then
-    echo "Integration test data check passed successfully."
-  elif [ "${TEST_RESULT}" = "${TEST_FAILED_FLAG}" ]; then
-    echo "ERROR: Integration test data check failed. Check BigQuery dataset ${DATASET} for results."
-    exit 1
-  else
-    echo "ERROR Integration test data check failed. Test Query returned: ${QUERY_RESULT}."
-    exit 1
-  fi
+  echo "Integration test data check passed successfully."
+elif [ "${TEST_RESULT}" = "${TEST_FAILED_FLAG}" ]; then
+  echo "ERROR: Integration test data check failed. Check BigQuery dataset ${DATASET} for results."
+  exit 1
+else
+  echo "ERROR Integration test data check failed. Test Query returned: ${QUERY_RESULT}."
+  exit 1
+fi
 
 # cleanup
 bq rm -f "${RESULTS_TABLE}"
