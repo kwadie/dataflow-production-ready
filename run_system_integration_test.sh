@@ -39,8 +39,8 @@ gsutil mb -c standard -l "${REGION}" "${GCS_BUCKET}"
 gsutil cp "${LOCAL_INPUT_PATH}" "${GCS_BUCKET}/input/"
 #replace with terraform script and pass the dataset as var
 bq mk --location "${REGION}" "${DATASET}"
-bq mk --table "${RESULTS_TABLE}" schemas/ml_preproc_results.json
-bq mk --table "${ERRORS_TABLE}" schemas/ml_preproc_errors.json
+bq mk --table "${RESULTS_TABLE}" schema/ml_preproc_results.json
+bq mk --table "${ERRORS_TABLE}" schema/ml_preproc_errors.json
 echo "Preparing GCP test resources complete."
 
 echo "Running dataflow flex template with params:

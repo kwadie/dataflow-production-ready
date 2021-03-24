@@ -21,7 +21,7 @@ source_address;source_city;target_address;target_city
 Then, apply some text-cleaning on the fields and calculate similarity features `address_similarity` and `city_similarity` between source and target attributes.
 The output and rejected records are then written into BigQuery into two separate tables.
 
-The main goal of the pipeline is to demonstrates the following:
+The main goal of the repo is to demonstrates the following:
 
  * Beam Pipeline structuring and patterns
     * DoFns
@@ -43,9 +43,7 @@ The main goal of the pipeline is to demonstrates the following:
     * Running unit tests
     * Building and deploying Flex template
     * Running system integration test with Flex template 
+* Infrastructure automation 
+    * Using Terraform to automate environment creation for the data pipeline
     
- ## Contributors
- This repo is a collaborative work done by the following contributors: 
- * [kwadie](https://github.com/kwadie)
- * [gmogr](https://github.com/gmogr)
- * [iht](https://github.com/iht)
+    

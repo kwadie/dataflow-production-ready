@@ -2,12 +2,12 @@
 
 ## Usage
 
-### Creating needed infrastructure components using the terraform script
+### Creating infrastructure components 
 
-In the root folder run the following command to deploy needed Bigquery datasets and tables:
-```
-gcloud builds submit .
-```
+Prepare the infrastructure (e.g. datasets, tables, etc) needed by the pipeline by referring to the
+[Terraform module](/terraform/README.MD)
+
+Note the BigQuery dataset name that you crate for late steps.
 
 ### Creating Python Virtual Environment for development
 
@@ -16,73 +16,82 @@ In the module root directory, run the following:
 ```
 python3 -m venv /tmp/venv/dataflow-production-ready-env
 source /tmp/venv/dataflow-production-ready-env/bin/activate
-pip install -r requirements.txt
+pip install -r python/requirements.txt
 ```
 
-### Exporting required variables
+### Setting the GCP Project
 
-In the repo root directory, set the following variables:
-```
-export TARGET_GCR_IMAGE="DATAFLOW_FLEX_ML_PREPROCESS"
-export TARGET_GCR_IMAGE_TAG="python"
-export TEMPLATE_GCS_LOCATION="gs://bucket/dir/spec.json"
-export GCP_PROJECT="PROJECT_ID"
-export REGION="GCP_REGION"
-export INPUT_CSV="gs://bucket/path_to_CSV"
-export BQ_RESULTS="project:dataset.table"
-export BQ_ERRORS="project:dataset.table"
-export SETUP_FILE="/dataflow/template/ml_preproc/setup.py"
-
-# For submitting to dataflow runner
-export TEMP_LOCATION="gs://bucket/tmp"
+In the repo root directory, set the environment variables
 
 ```
-Then, configure the gcloud tool
+export GCP_PROJECT=<PROJECT_ID>
+export REGION=<GCP_REGION>
+export BUCKET_NAME=<DEMO_BUCKET_NAME>
+```
+
+Then set the GCP project
 
 ```
 gcloud config set project $GCP_PROJECT
 ```
 
-### Commands
+Then, create a GCS bucket for this demo
+```
+gsutil mb -l $REGION -p $GCP_PROJECT gs://$BUCKET_NAME
+```
 
-#### Running a manual build
+
+### Running a full build
+
+The build is defined by [cloudbuild.yaml](cloudbuild.yaml) and runs on Cloud Build. It applies the following steps:
+* Run unit tests
+* Build a container image as defined in [Dockerfile](Dockerfile)
+* Create a Dataflow flex template based on the container image
+* Run automated system integration test using the Flex template (including test resources provisioning)
+
+Set the following variables:
+```
+export TARGET_GCR_IMAGE="dataflow_flex_ml_preproc"
+export TARGET_GCR_IMAGE_TAG="python"
+export TEMPLATE_GCS_LOCATION="gs://$BUCKET_NAME/template/spec.json"
+```
+
 Run the following command in the root folder
 
 ```
-gcloud builds submit --config=python/cloudbuild.yaml --substitutions=_IMAGE_NAME=${TARGET_GCR_IMAGE},_IMAGE_TAG=${TARGET_GCR_IMAGE_TAG},_BUCKET_NAME=${TEMPLATE_GCS_LOCATION},_REGION=${REGION}
+gcloud builds submit --config=python/cloudbuild.yaml --substitutions=_IMAGE_NAME=${TARGET_GCR_IMAGE},_IMAGE_TAG=${TARGET_GCR_IMAGE_TAG},_TEMPLATE_GCS_LOCATION=${TEMPLATE_GCS_LOCATION},_REGION=${REGION}
 ```
 
-#### Running Unit Tests
+### Manual Commands
 
-To run all unit tests
+#### Prerequisites
 
+* Create an input file similar to [integration_test_input.csv](/data/integration_test_input.csv) (or copy it to GCS and use it as input)
+
+* Set extra variables (use same dataset name as created by the Terraform module)
 ```
-python -m unittest discover
-```
-
-To run particular test file
-
-```
-python -m unittest ml_preproc.pipeline.ml_preproc_test
+export INPUT_CSV="gs://$BUCKET_NAME/input/path_to_CSV"
+export BQ_RESULTS="project:dataset.ml_preproc_results"
+export BQ_ERRORS="project:dataset.ml_preproc_errors"
+export TEMP_LOCATION="gs://$BUCKET_NAME/tmp"
+export SETUP_FILE="/dataflow/template/ml_preproc/setup.py"
 ```
 
 #### Running pipeline locally 
 
+Export this extra variables and run the script
 ```
 chmod +x run_direct_runner.sh
 ./run_direct_runner.sh
 ``` 
 
-
-
 #### Running pipeline on Dataflow service
 
+Export this extra variables and run the script
 ```
 chmod +x run_dataflow_runner.sh
 ./run_dataflow_runner.sh
 ``` 
-
-
 
 #### Running Flex Templates
 
@@ -99,6 +108,19 @@ chmod +x run_dataflow_template.sh
 Note that the parameter setup_file must be included in [metadata.json](ml_preproc/spec/metadata.json) and passed to the pipeline. It enables working with multiple Python modules/files and it's set to the path of 
 [setup.py](ml_preproc/setup.py) inside the docker container. 
 
+#### Running Unit Tests
+
+To run all unit tests
+
+```
+python -m unittest discover
+```
+
+To run particular test file
+
+```
+python -m unittest ml_preproc.pipeline.ml_preproc_test
+```
 
 #### Debug flex-template container image
 In cloud shell, run the deployed container image using the bash endpoint 
@@ -142,12 +164,13 @@ The CD pipeline is defined in [cloudbuild.yaml](ml_preproc/cloudbuild.yaml) to b
 4. Running system integration test using the deployed Flex-template and waiting for it's results 
 
 ### Substitution variables
-Cloud Build provides default variables such as $PROJECT_ID that could be used in the build YAML file. User defined variables could also be used in the form of $_USER_VARIABLE.
+Cloud Build provides default variables such as `$PROJECT_ID` that could be used in the build YAML file. User defined variables could also be used in the form of `$_USER_VARIABLE`.
 
 In this project the following variables are used:
-- $_TARGET_GCR_IMAGE: The GCR image name to be submitted to Cloud Build (not URI) (e.g wordcount-flex-template)
-- $_TEMPLATE_GCS_LOCATION: GCS location to store the template spec file (e.g. gs://bucket/dir/). The spec file path is required later on to submit run commands to Dataflow
-- $_REGION: GCP region to deploy and run the dataflow flex template
+- `$_TARGET_GCR_IMAGE`: The GCR image name to be submitted to Cloud Build (not URI) (e.g wordcount-flex-template)
+- `$_TEMPLATE_GCS_LOCATION`: GCS location to store the template spec file (e.g. gs://bucket/dir/). The spec file path is required later on to submit run commands to Dataflow
+- `$_REGION`: GCP region to deploy and run the dataflow flex template
+- `$_IMAGE_TAG`: Image tag
 
 These variables must be set during manual build execution or via a build trigger
 

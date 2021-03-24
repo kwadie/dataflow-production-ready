@@ -1,20 +1,37 @@
 
+## Intro
+
+This Terraform module will automate the creation of infrastructure components needed for the data pipeline.
+
+Currently it has a [BigQuery](modules/bigquery) submodule that automate the creation of
+* A dataset
+* A set of tables with their schema defined in [Schema folder](/schema)
+
+The BigQuery dataset name could be passed as a parameter. However, a default value is set in [variables.tf](variables.tf)
+
+Terraform automation is configured to use a gcs bucket as a backend. So it assumes the bucket defined in [backend.tf](backend.tf) is created and the account running terraform scripts has enough permissions to access it.
+
 ## Usage
+
+* Export variables
 ```
-export PROJECT_ID=<project_id>`
-terraform init
-terraform plan
-terraform apply -var=project=${PROJECT_ID}
+export GCP_PROJECT=<projact ID>
+export REGION=<GCP region>
+export BQ_DATASET=<BigQuery Dataset Name>
 ```
-To automate the execution of the terraform scripts cloudbuild_tf.yaml file could be used from the root folder. It will trigger Cloud Build pipeline which will execute terraform init, terraform plan and terraform apply steps.
 
-Terraform scripts are used to automate bq dataset and tables creation. It will create a BQ dataset with default name "dataflow_production_ready" (could be configured via tf variables) and populate it with tables generated based on the files in the `schemas` folder
+* Update the Terraform backend bucket name in [backend.tf](backend.tf) (if necessary) and create a bucket with the same name
+```
+gsutil mb -l $REGION -p $GCP_PROJECT gs://<bucket name as in backend.tf> 
+```
 
-Terraform script accepts 2 variables:
-project (required) - id of the gcp project used to deploy components
-bq_dataset_name (optional, default = "dataflow_production_ready") - bigquery dataset name
+* From the **repo root folder**, set up the environment via Cloud Build
+```
+gcloud builds submit --config=cloudbuild_tf.yaml --substitutions=_PROJECT_ID=$GCP_PROJECT,_BQ_DATASET=$BQ_DATASET
 
-Terraform automation is configured to use a gcs bucket as a backend. So it assumes the bucket defined in backend.tf is created and the account running terraform scripts has enough permissions to access it.
+```
 
-For the sake of simplicity we put terraform configuration to the same folder as the dataflow pipeline. In the production environment though we recommend moving the terraform configuration to the separate repository to be able to modify the infrastructure and the pipeline independently.
+## Production Considerations
+* The Terraform module could be extended to include other infrastructure components required by the pipeline (e.g. Buckets, Permissions, etc)
 
+* For the sake of simplicity we placed this Terraform module in the same folder as the data pipeline. In a production environment, it's recommend to place infrastructure automation (i.e. Terraform) in a the separate repository to be able to modify the infrastructure and the pipeline independently. Automated Cloud Build triggers could be configured on such a separate repository to update the infrastructure on code commits.

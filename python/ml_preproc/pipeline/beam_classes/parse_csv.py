@@ -40,5 +40,4 @@ class ParseCSVDoFn(DoFn):
     except TypeError as err:
       self.wrong_records_counter.inc()
       msg = str(err)
-      # Make sure the output dict matches the schema in model.schemas.ERRORS_SCHEMA
       yield pvalue.TaggedOutput(ParseCSVDoFn.WRONG_OUTPUT_TAG, {'error': msg, 'line': element})
