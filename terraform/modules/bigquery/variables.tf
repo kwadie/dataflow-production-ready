@@ -13,5 +13,5 @@ variable "dataset_location" {
 
 variable "bq_path_to_schemas" {
   description = "Local path to bq schemas"
-  default     = "../schemas"
+  default     = "../schema"
 }
