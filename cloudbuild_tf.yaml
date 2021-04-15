@@ -23,14 +23,13 @@ steps:
     name: hashicorp/terraform
     dir: terraform
     entrypoint: terraform
-    args: ["plan","-no-color","-var=project=${_PROJECT_ID}","-var=bq_dataset_name=${_BQ_DATASET}"]
+    args: ["plan","-no-color","-var=project=${PROJECT_ID}","-var=bq_dataset_name=${_BQ_DATASET}"]
 
   - id: 'tf apply'
     name: hashicorp/terraform
     dir: terraform
     entrypoint: terraform
-    args: ["apply","-no-color","-var=project=${_PROJECT_ID}","-var=bq_dataset_name=${_BQ_DATASET}","-auto-approve"]
+    args: ["apply","-no-color","-var=project=${PROJECT_ID}","-var=bq_dataset_name=${_BQ_DATASET}","-auto-approve"]
 
 substitutions:
-  _PROJECT_ID: ${PROJECT_ID}
   _BQ_DATASET: dataflow_production_ready

@@ -50,9 +50,13 @@ steps:
     args: ["./run_system_integration_test.sh"]
 
 substitutions:
+  _TEMPLATE_GCS_LOCATION: gs://dataflow-production-ready/dataflow/templates/ml_preproc.json
   _IMAGE_NAME: ml_preproc
   _IMAGE_TAG: python
   _REGION: europe-west1
+
+options:
+  substitution_option: 'ALLOW_LOOSE'
 
 # To allow time for integration testing
 timeout: 1800s
